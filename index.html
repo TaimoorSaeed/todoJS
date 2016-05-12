@@ -28,19 +28,56 @@
             done: document.getElementById('done')
         };
 
-        console.log(input,btn,lists);
+//        console.log(input,btn,lists);
 
-        var makeTaskHtml= function(str){
-            var el= document.createElement("li");
-            el.textContent=str;
+        var makeTaskHtml= function(str, onCheck){
+            var el= document.createElement('li');
+            var checkbox = document.createElement('input');
+            var label= document.createElement('span');
+
+    //            el.textContent=str;
+
+            checkbox.type='checkbox';
+            checkbox.addEventListener('click', onCheck);
+            label.textContent=str;
+
+            el.appendChild(checkbox);
+            el.appendChild(label);
+
             return el;
         };
 
-        var addTask = function(list, task){
-            list.appendChild(task);
+        var addTask = function(task){
+            lists.todo.appendChild(task);
         };
-        addTask(lists.todo,makeTaskHtml("Test Task"));
-        addTask(lists.done,makeTaskHtml("Test Task done"));
+        var onCheck = function(event){
+            var task= event.target.parentElement;
+            var list=task.parentElement.id;
+
+            lists[list === 'done' ? 'todo' : 'done'].appendChild(task);
+            this.checked= false;
+        };
+//
+            var onInput = function(){
+                var str=input.value.trim();
+
+                if(str.length > 0){
+                    addTask(makeTaskHtml(str,onCheck));
+
+                    input.value = '';
+                    input.focus();
+                }
+
+                console.log(str);
+            };
+        btn.addEventListener('click',onInput);
+        input.addEventListener('keyup',function(event){
+            var code= event.keyCode;
+            if (code=== 13){
+                onInput();
+            }
+        })
+        input.focus();
 
     }());
 
